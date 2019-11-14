@@ -26,16 +26,20 @@ impl fmt::Display for Card {
         match self {
             AddThreeDigits(d1, d2, d3) => write!(
                 f,
-                "Tel het {:#}, {:#} en {:#} cijfer bij elkaar",
+                "Tel het {:#}, het {:#} en het {:#} cijfer bij elkaar",
                 d1, d2, d3
             ),
-            AddTwoDigits(d1, d2) => write!(f, "Tel het {:#} en {:#} cijfer bij elkaar", d1, d2),
+            AddTwoDigits(d1, d2) => write!(f, "Tel het {:#} en het {:#} cijfer bij elkaar", d1, d2),
             MultiplyTwoDigits(d1, d2) => {
-                write!(f, "Vermenigvuldig het {:#} en {:#} cijfer", d1, d2)
+                write!(f, "Vermenigvuldig het {:#} met het {:#} cijfer", d1, d2)
             }
             AddAllOfParity(parity) => write!(f, "Tel alle {} cijfers bij elkaar", parity),
-            NumberOfParity(parity) => write!(f, "Tel het aantal {} cijfers", parity),
-            PresenceOfNumber(n) => write!(f, "Komt er een {} voor in de code?", n),
+            NumberOfParity(parity) => write!(
+                f,
+                "Hoeveel {} cijfers komen er in de combinatie voor?",
+                parity
+            ),
+            PresenceOfNumber(n) => write!(f, "Komt er een {} in de combinatie voor?", n),
         }
     }
 }

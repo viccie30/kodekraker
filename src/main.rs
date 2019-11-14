@@ -1,5 +1,7 @@
 mod cards;
 
 fn main() {
-    println!("{:?}", cards::generate_cards());
+    for card in cards::generate_cards() {
+        println!("{}", card);
+    }
 }
