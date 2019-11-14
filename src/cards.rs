@@ -7,10 +7,11 @@ pub enum Card {
     MultiplyTwoDigits(Digit, Digit),
     AddAllOfParity(Parity),
     NumberOfParity(Parity),
-    PresenceOfNumber(u8),
+    PresenceOfNumber(Number),
 }
 
-pub type Digit = u8;
+pub struct Digit(u8);
+pub struct Number(u8);
 
 #[derive(Debug)]
 pub enum Parity {
@@ -20,23 +21,29 @@ pub enum Parity {
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-	write!(f, match self { AddThreeDigits(i,j,k) => 
+match self {
+    AddThreeDigits(d1, d2, d3),
+    AddTwoDigits(d1, d2),
+    MultiplyTwoDigits(d1, d2),
+    AddAllOfParity(parity),
+    NumberOfParity(parity),
+    PresenceOfNumber(n),
 }
 }
 
 pub fn generate_cards() -> Vec<Card> {
     let mut deck = Vec::with_capacity(61);
 
-    for i in 1..5 {
-        for j in i + 1..6 {
-            for k in j + 1..7 {
+    for i in 1..=4 {
+        for j in i + 1..=5 {
+            for k in j + 1..=6 {
                 deck.push(Card::AddThreeDigits(i, j, k));
             }
         }
     }
 
-    for i in 1..6 {
-        for j in i + 1..7 {
+    for i in 1..=5 {
+        for j in i + 1..=6 {
             deck.push(Card::AddTwoDigits(i, j));
             deck.push(Card::MultiplyTwoDigits(i, j));
         }
@@ -47,7 +54,7 @@ pub fn generate_cards() -> Vec<Card> {
     deck.push(Card::NumberOfParity(Parity::Even));
     deck.push(Card::NumberOfParity(Parity::Odd));
 
-    for i in 0..7 {
+    for i in 0..=6 {
         deck.push(Card::PresenceOfNumber(i));
     }
 
