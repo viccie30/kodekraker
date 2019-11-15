@@ -1,4 +1,7 @@
 use std::fmt;
+
+use rand::prelude::*;
+
 use Card::*;
 
 #[derive(Debug)]
@@ -90,32 +93,36 @@ impl fmt::Display for Parity {
         }
     }
 }
+
 pub fn generate_cards() -> Vec<Card> {
     let mut deck = Vec::with_capacity(61);
 
     for i in 1..=4 {
         for j in i + 1..=5 {
             for k in j + 1..=6 {
-                deck.push(Card::AddThreeDigits(Digit(i), Digit(j), Digit(k)));
+                deck.push(AddThreeDigits(Digit(i), Digit(j), Digit(k)));
             }
         }
     }
 
     for i in 1..=5 {
         for j in i + 1..=6 {
-            deck.push(Card::AddTwoDigits(Digit(i), Digit(j)));
-            deck.push(Card::MultiplyTwoDigits(Digit(i), Digit(j)));
+            deck.push(AddTwoDigits(Digit(i), Digit(j)));
+            deck.push(MultiplyTwoDigits(Digit(i), Digit(j)));
         }
     }
 
-    deck.push(Card::AddAllOfParity(Parity::Even));
-    deck.push(Card::AddAllOfParity(Parity::Odd));
-    deck.push(Card::NumberOfParity(Parity::Even));
-    deck.push(Card::NumberOfParity(Parity::Odd));
+    deck.push(AddAllOfParity(Parity::Even));
+    deck.push(AddAllOfParity(Parity::Odd));
+    deck.push(NumberOfParity(Parity::Even));
+    deck.push(NumberOfParity(Parity::Odd));
 
     for i in 0..=6 {
-        deck.push(Card::PresenceOfNumber(Number(i)));
+        deck.push(PresenceOfNumber(Number(i)));
     }
+
+    let mut rng = StdRng::from_rng(thread_rng()).unwrap();
+    deck.shuffle(&mut rng);
 
     deck
 }
