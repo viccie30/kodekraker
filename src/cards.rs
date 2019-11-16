@@ -5,6 +5,9 @@ use rand::prelude::*;
 use Card::*;
 
 #[derive(Debug)]
+pub struct Deck(Vec<Card>);
+
+#[derive(Debug)]
 pub enum Card {
 	AddThreeDigits(Digit, Digit, Digit),
 	AddTwoDigits(Digit, Digit),
@@ -94,35 +97,43 @@ impl fmt::Display for Parity {
 	}
 }
 
-pub fn generate_cards() -> Vec<Card> {
-	let mut deck = Vec::with_capacity(61);
+impl Deck {
+	pub fn new() -> Deck {
+		let mut deck = Vec::with_capacity(61);
 
-	for i in 1..=4 {
-		for j in i + 1..=5 {
-			for k in j + 1..=6 {
-				deck.push(AddThreeDigits(Digit(i), Digit(j), Digit(k)));
+		for i in 1..=4 {
+			for j in i + 1..=5 {
+				for k in j + 1..=6 {
+					deck.push(AddThreeDigits(Digit(i), Digit(j), Digit(k)));
+				}
 			}
 		}
-	}
 
-	for i in 1..=5 {
-		for j in i + 1..=6 {
-			deck.push(AddTwoDigits(Digit(i), Digit(j)));
-			deck.push(MultiplyTwoDigits(Digit(i), Digit(j)));
+		for i in 1..=5 {
+			for j in i + 1..=6 {
+				deck.push(AddTwoDigits(Digit(i), Digit(j)));
+				deck.push(MultiplyTwoDigits(Digit(i), Digit(j)));
+			}
 		}
+
+		deck.push(AddAllOfParity(Parity::Even));
+		deck.push(AddAllOfParity(Parity::Odd));
+		deck.push(NumberOfParity(Parity::Even));
+		deck.push(NumberOfParity(Parity::Odd));
+
+		for i in 0..=6 {
+			deck.push(PresenceOfNumber(Number(i)));
+		}
+
+		let mut rng = StdRng::from_rng(thread_rng()).unwrap();
+		deck.shuffle(&mut rng);
+
+		Deck(deck)
 	}
+}
 
-	deck.push(AddAllOfParity(Parity::Even));
-	deck.push(AddAllOfParity(Parity::Odd));
-	deck.push(NumberOfParity(Parity::Even));
-	deck.push(NumberOfParity(Parity::Odd));
+impl Iterator for Deck {
+	type Item = Card;
 
-	for i in 0..=6 {
-		deck.push(PresenceOfNumber(Number(i)));
-	}
-
-	let mut rng = StdRng::from_rng(thread_rng()).unwrap();
-	deck.shuffle(&mut rng);
-
-	deck
+	fn next(&mut self) -> Option<Self::Item> { self.0.pop() }
 }
