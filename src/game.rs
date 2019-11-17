@@ -1,3 +1,5 @@
+use std::convert::TryInto;
+
 use super::cards::{Card::*, *};
 
 #[derive(Debug)]
@@ -65,9 +67,11 @@ impl Combination {
 			AddTwoDigits(d1, d2) => Answer::Number(self[d1].as_u8() + self[d2].as_u8()),
 			MultiplyTwoDigits(d1, d2) => Answer::Number(self[d1].as_u8() * self[d2].as_u8()),
 			AddAllOfParity(parity) => {
-				Answer::Number(self.filter_on_parity(parity).filter(|n| n.as_u8()).sum())
+				Answer::Number(self.filter_on_parity(parity).map(|n| n.as_u8()).sum())
 			},
-			NumberOfParity(parity) => Answer::Number(self.filter_on_parity(parity).count()),
+			NumberOfParity(parity) => {
+				Answer::Number(self.filter_on_parity(parity).count().try_into().unwrap())
+			},
 			PresenceOfNumber(number) => {
 				Answer::Boolean(self.into_iter().filter(|&&n| n == number).count() > 0)
 			},
@@ -76,8 +80,8 @@ impl Combination {
 		AnsweredQuestion { card, answer }
 	}
 
-	fn filter_on_parity(&self, parity: Parity) -> impl Iterator + '_ {
-		self.into_iter().filter(|n| n.parity() == parity)
+	fn filter_on_parity(&self, parity: Parity) -> impl Iterator<Item = &Number> {
+		self.into_iter().filter(move |n| n.parity() == parity)
 	}
 }
 
@@ -88,8 +92,8 @@ impl std::ops::Index<Digit> for Combination {
 }
 
 impl<'a> IntoIterator for &'a Combination {
-	type IntoIter = <&'a [Number] as IntoIterator>::IntoIter;
+	type IntoIter = std::slice::Iter<'a, Number>;
 	type Item = &'a Number;
 
-	fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
+	fn into_iter(self) -> Self::IntoIter { self.0.iter() }
 }
