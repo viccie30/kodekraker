@@ -11,11 +11,11 @@ fn main() {
 		};
 	}
 
-	// 	println!(
-	// "{:?}",
-	// game::Game::new(
-	// game::Combination::new(1, 2, 3, 4, 5, 6),
-	// game::Combination::new(4, 3, 2, 1, 0, 5)
-	// )
-	// );
+	println!(
+		"{:#?}",
+		game::Game::new(
+			game::Combination::new(1, 2, 3, 4, 5, 6),
+			game::Combination::new(4, 3, 6, 1, 0, 5)
+		)
+	);
 }

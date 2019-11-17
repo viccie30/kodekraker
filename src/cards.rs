@@ -137,3 +137,19 @@ impl Iterator for Deck {
 
 	fn next(&mut self) -> Option<Self::Item> { self.0.pop() }
 }
+
+impl From<u8> for Digit {
+	fn from(digit: u8) -> Digit {
+		assert!(digit >= 1 && digit <= 6);
+
+		Digit(digit)
+	}
+}
+
+impl From<u8> for Number {
+	fn from(number: u8) -> Number {
+		assert!(number <= 6);
+
+		Number(number)
+	}
+}

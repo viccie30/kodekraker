@@ -1,4 +1,4 @@
-use super::cards::*;
+use super::cards::{Card::*, *};
 
 #[derive(Debug)]
 pub struct Game {
@@ -13,7 +13,7 @@ pub struct PlayerState {
 }
 
 #[derive(Debug)]
-pub struct Combination([Digit; 6]);
+pub struct Combination([Number; 6]);
 
 #[derive(Debug)]
 pub struct AnsweredQuestion {
@@ -40,7 +40,31 @@ impl Game {
 }
 
 impl Combination {
-	pub fn new(d1: Digit, d2: Digit, d3: Digit, d4: Digit, d5: Digit, d6: Digit) -> Combination {
-		Combination([d1, d2, d3, d4, d5, d6])
+	pub fn new<T: Into<Number>>(n1: T, n2: T, n3: T, n4: T, n5: T, n6: T) -> Combination {
+		Combination([
+			n1.into(),
+			n2.into(),
+			n3.into(),
+			n4.into(),
+			n5.into(),
+			n6.into(),
+		])
+	}
+}
+
+impl Card {
+	pub fn answer(self, answer: u8) -> AnsweredQuestion { AnsweredQuestion { card: self, answer } }
+}
+
+impl PlayerState {
+	pub fn answer(&self, card: &Card) -> u8 {
+		match card {
+			AddThreeDigits(d1, d2, d3) => d1 + d2 + d3,
+			AddTwoDigits(d1, d2) => d1 + d2,
+			MultiplyTwoDigits(d1, d2) => d1 * d2,
+			AddAllOfParity(parity) => todo!(),
+			NumberOfParity(parity) => todo!(),
+			PresenceOfNumber(n) => todo!(),
+		}
 	}
 }
