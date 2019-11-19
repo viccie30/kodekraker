@@ -6,5 +6,18 @@ rust:
 jobs:
   allow_failures:
     - rust: nightly
+      env: BUILD
   fast_finish: true
+  include:
+    - rust: nightly
+      before_install: rustup component add rustfmt && export RUSTFMT=1 || true
+      script: if [ $RUSTFMT ]; then cargo fmt -- --check --verbose; fi
+      env: FORMAT
 cache: cargo
+before_install:
+  - rustup component add clippy && export CLIPPY=1 || true
+script:
+  - cargo build --verbose
+  - if [ $CLIPPY ]; then cargo clippy --verbose; fi
+  - cargo test --verbose
+env: BUILD
